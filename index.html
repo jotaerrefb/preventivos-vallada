@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#C2185B">
+  <title>Preventivos Vallada</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <section class="page on" id="page-mes">
+      <header class="top">
+        <div class="brand">
+          <img src="icon.svg" alt="Ambulancias Vallada" class="logo">
+          <div>
+            <h1>Preventivos Vallada</h1>
+            <p id="sub-cond">José Ramón Ferrer Blasco · 213</p>
+          </div>
+        </div>
+        <div class="month-bar">
+          <select id="sel-mes" onchange="mesSel=+this.value;renderMes()"></select>
+          <input id="sel-anio" type="number" style="width:90px" onchange="anioSel=+this.value;renderMes()">
+        </div>
+      </header>
+      <div class="totals">
+        <div class="tot"><b id="t-n">0</b><span>Servicios</span></div>
+        <div class="tot"><b id="t-h">0:00</b><span>Horas</span></div>
+        <div class="tot"><b id="t-e">0 €</b><span>Importe</span></div>
+      </div>
+      <div class="list" id="lista"></div>
+      <button class="fab" onclick="nuevo()" aria-label="Nuevo">+</button>
+    </section>
+    <section class="page" id="page-form">
+      <header class="top"><h1 id="f-titulo">Nuevo servicio</h1></header>
+      <form class="sheet" onsubmit="guardarServicio(event)">
+        <label>Fecha</label>
+        <input id="f-fecha" type="date" required>
+        <label>Destino</label>
+        <input id="f-destino" placeholder="Titaguas, Guadassuar…">
+        <label>Nombre del evento</label>
+        <input id="f-evento" placeholder="Correfoc, Motociclismo…">
+        <div class="grid2">
+          <div><label>H. llegada</label><input id="f-llegada" type="time"></div>
+          <div><label>H. fin</label><input id="f-fin" type="time"></div>
+        </div>
+        <div class="grid2">
+          <div><label>H. a cobrar (si la empresa pone otras)</label><input id="f-cobrar" placeholder="7:30"></div>
+          <div><label>€ manual (80 disco, 60 plus…)</label><input id="f-manual" type="number" step="0.01" placeholder="vacío = regla"></div>
+        </div>
+        <label>Notas</label>
+        <textarea id="f-notas" class="obs" placeholder="Ambulancia, relevo, anulación…"></textarea>
+        <div class="preview">
+          <span>Reloj <b id="prev-h">—</b></span>
+          <span id="prev-e">0,00 €</span>
+        </div>
+        <button class="btn-primary" type="submit">Guardar</button>
+        <button class="btn-ghost" type="button" onclick="go('mes')">Cancelar</button>
+      </form>
+    </section>
+    <section class="page" id="page-resumen">
+      <header class="top"><h1>Resumen</h1></header>
+      <div id="res-body"></div>
+    </section>
+    <section class="page" id="page-ajustes">
+      <header class="top"><h1>Ajustes</h1></header>
+      <div class="settings">
+        <div class="card">
+          <label>Nombre</label><input id="set-nombre">
+          <label>Código</label><input id="set-codigo">
+          <label>Base</label><input id="set-base">
+        </div>
+        <div class="card">
+          <label>Umbral horas</label><input id="set-umbral" type="number" step="0.5">
+          <label>€ si menor</label><input id="set-fijo" type="number" step="0.01">
+          <label>€ por hora</label><input id="set-hora" type="number" step="0.01">
+          <label>Email oficinas</label><input id="set-email" type="email" placeholder="oficinas@…">
+        </div>
+        <div style="padding:0 16px 12px">
+          <button class="btn-primary" onclick="guardarAjustes()">Guardar ajustes</button>
+        </div>
+        <div class="card">
+          <button class="btn-primary" onclick="exportarExcel()">Exportar Excel para Grok</button>
+          <p class="hint">Guárdalo en OneDrive y envíamelo aquí para actualizar el libro grande.</p>
+          <button class="btn-ghost" onclick="exportarJSON()">Copia de seguridad JSON</button>
+          <p class="hint">Importar JSON:</p>
+          <input type="file" accept="application/json" onchange="if(this.files[0])importarJSON(this.files[0])">
+        </div>
+      </div>
+    </section>
+  </div>
+  <nav class="tab">
+    <button class="on" data-page="mes" onclick="go('mes')"><span class="ic">☰</span>Mes</button>
+    <button data-page="form" onclick="nuevo()"><span class="ic">＋</span>Nuevo</button>
+    <button data-page="resumen" onclick="go('resumen')"><span class="ic">∑</span>Resumen</button>
+    <button data-page="ajustes" onclick="go('ajustes')"><span class="ic">⚙</span>Ajustes</button>
+  </nav>
+  <script src="app.js"></script>
+</body>
+</html>
