@@ -1,0 +1,10 @@
+{
+  "name": "Preventivos Vallada",
+  "short_name": "Preventivos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#880E4F",
+  "theme_color": "#C2185B",
+  "orientation": "portrait",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+}
